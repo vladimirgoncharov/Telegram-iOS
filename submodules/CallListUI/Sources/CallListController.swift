@@ -214,14 +214,19 @@ public final class CallListController: TelegramBaseController {
             }
         }, openInfo: { [weak self] peerId, messages in
             if let strongSelf = self {
-                let _ = (strongSelf.context.engine.data.get(
-                    TelegramEngine.EngineData.Item.Peer.Peer(id: peerId)
-                )
-                |> deliverOnMainQueue).start(next: { peer in
-                    if let strongSelf = self, let peer = peer, let controller = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .calls(messages: messages.map({ $0._asMessage() })), avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
-                        (strongSelf.navigationController as? NavigationController)?.pushViewController(controller)
-                    }
-                })
+                let _ = strongSelf.context.account.timeFetcher.currentDateTime().start(next: { date in
+                    let _ = (strongSelf.context.engine.data.get(
+                        TelegramEngine.EngineData.Item.Peer.Peer(id: peerId)
+                    )
+                    |> deliverOnMainQueue).start(next: {[weak self] peer in
+                        if let strongSelf = self {
+                            if let peer = peer, let controller = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .calls(messages: messages.map({ $0._asMessage() }), date: date), avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
+                                (strongSelf
+                                    .navigationController as? NavigationController)?.pushViewController(controller)
+                            }
+                        }
+                    })
+                }, error: nil, completed: nil)
             }
         }, emptyStateUpdated: { [weak self] empty in
             if let strongSelf = self {

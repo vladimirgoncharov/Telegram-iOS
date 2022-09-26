@@ -888,6 +888,7 @@ public class Account {
     private var localInputActivityManager: PeerInputActivityManager!
     private var accountPresenceManager: AccountPresenceManager!
     private var notificationAutolockReportManager: NotificationAutolockReportManager!
+    public private(set) var timeFetcher: TimeFetcher!
     fileprivate let managedContactsDisposable = MetaDisposable()
     fileprivate let managedStickerPacksDisposable = MetaDisposable()
     private let becomeMasterDisposable = MetaDisposable()
@@ -969,6 +970,7 @@ public class Account {
         )
         
         self.viewTracker = AccountViewTracker(account: self)
+        self.timeFetcher = TimeFetcher()
         self.messageMediaPreuploadManager = MessageMediaPreuploadManager()
         self.mediaReferenceRevalidationContext = MediaReferenceRevalidationContext()
         self.pendingMessageManager = PendingMessageManager(network: network, postbox: postbox, accountPeerId: peerId, auxiliaryMethods: auxiliaryMethods, stateManager: self.stateManager, localInputActivityManager: self.localInputActivityManager, messageMediaPreuploadManager: self.messageMediaPreuploadManager, revalidationContext: self.mediaReferenceRevalidationContext)

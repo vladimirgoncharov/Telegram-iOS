@@ -1518,18 +1518,20 @@ private func peerInfoControllerImpl(context: AccountContext, updatedPresentation
     } else if peer is TelegramUser {
         var nearbyPeerDistance: Int32?
         var callMessages: [Message] = []
+        var headerDate: Date?
         var hintGroupInCommon: PeerId?
         switch mode {
         case let .nearbyPeer(distance):
             nearbyPeerDistance = distance
-        case let .calls(messages):
+        case let .calls(messages, date):
             callMessages = messages
+            headerDate = date
         case .generic:
             break
         case let .group(id):
             hintGroupInCommon = id
         }
-        return PeerInfoScreenImpl(context: context, updatedPresentationData: updatedPresentationData, peerId: peer.id, avatarInitiallyExpanded: avatarInitiallyExpanded, isOpenedFromChat: isOpenedFromChat, nearbyPeerDistance: nearbyPeerDistance, callMessages: callMessages, hintGroupInCommon: hintGroupInCommon)
+        return PeerInfoScreenImpl(context: context, updatedPresentationData: updatedPresentationData, peerId: peer.id, avatarInitiallyExpanded: avatarInitiallyExpanded, isOpenedFromChat: isOpenedFromChat, nearbyPeerDistance: nearbyPeerDistance, callMessages: callMessages, headerDate: headerDate, hintGroupInCommon: hintGroupInCommon)
     } else if peer is TelegramSecretChat {
         return PeerInfoScreenImpl(context: context, updatedPresentationData: updatedPresentationData, peerId: peer.id, avatarInitiallyExpanded: avatarInitiallyExpanded, isOpenedFromChat: isOpenedFromChat, nearbyPeerDistance: nil, callMessages: [])
     }
